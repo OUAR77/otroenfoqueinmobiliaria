@@ -9,4 +9,3 @@ node_modules/
 .opencode/
 build/
 .venv/
-static/properties/
