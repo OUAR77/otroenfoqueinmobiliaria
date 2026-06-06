@@ -5,3 +5,8 @@ __pycache__/
 data-backup*.db
 static/properties-backup*/
 dist/
+node_modules/
+.opencode/
+build/
+.venv/
+static/properties/
