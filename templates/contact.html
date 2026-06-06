@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Contacto — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="contact-hero">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Contacto</div>
+      <h2>Estamos aquí para ayudarte</h2>
+      <p>Contáctanos por cualquier duda y te responderemos lo antes posible</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-card reveal-scale">
+        <div class="contact-card-icon"><i class="fab fa-whatsapp"></i></div>
+        <h3>WhatsApp</h3>
+        <p>Respuesta rápida a tus consultas por WhatsApp</p>
+        <a href="https://wa.me/34{{ whatsapp }}" target="_blank" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Escribir ahora</a>
+      </div>
+      <div class="contact-card reveal-scale">
+        <div class="contact-card-icon"><i class="fas fa-phone"></i></div>
+        <h3>Teléfono</h3>
+        <p>Llámanos directamente y habla con nuestro equipo</p>
+        <a href="tel:+34{{ whatsapp }}" class="btn btn-outline btn-outline-dark"><i class="fas fa-phone"></i> +34 {{ whatsapp[:3] }} {{ whatsapp[3:6] }} {{ whatsapp[6:] }}</a>
+      </div>
+      <div class="contact-card reveal-scale">
+        <div class="contact-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <h3>Visítanos</h3>
+        <p>C. Río Júcar, 17, 1°- oficina 3, 04230 Huércal de Almería, Almería</p>
+        <a href="https://wa.me/34{{ whatsapp }}" target="_blank" class="btn btn-outline btn-outline-dark"><i class="fab fa-whatsapp"></i> Pedir cita</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Formulario</div>
+      <h2>Envíanos un mensaje</h2>
+      <p>Te responderemos en menos de 24 horas</p>
+    </div>
+    <div style="max-width:640px;margin:0 auto">
+      {% if success %}
+      <div style="background:var(--red-light);color:var(--red-dark);padding:20px 24px;border-radius:var(--radius-md);margin-bottom:32px;text-align:center;font-weight:600">
+        <i class="fas fa-check-circle"></i> {{ success }}
+      </div>
+      {% endif %}
+      {% if error %}
+      <div style="background:#FEE2E2;color:var(--red-dark);padding:20px 24px;border-radius:var(--radius-md);margin-bottom:32px;text-align:center;font-weight:600">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+      </div>
+      {% endif %}
+      <form method="POST" action="/contacto" class="reveal" style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:40px;box-shadow:var(--shadow)">
+        <div class="form-grid" style="margin-bottom:0">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" name="name" required placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" name="email" required placeholder="tu@email.com">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" name="phone" placeholder="614 23 40 64">
+          </div>
+          <div class="form-group">
+            <label>Asunto</label>
+            <input type="text" name="subject" placeholder="Ej: Quiero visitar un piso">
+          </div>
+          <div class="form-group full">
+            <label>Mensaje *</label>
+            <textarea name="message" required rows="5" placeholder="Cuéntanos qué necesitas..." style="resize:vertical"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:24px">
+          <i class="fas fa-paper-plane"></i> Enviar mensaje
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

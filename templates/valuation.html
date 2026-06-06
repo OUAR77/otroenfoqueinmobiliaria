@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ meta_title }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:140px 0 40px">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="/">Inicio</a>
+      <span class="sep">/</span>
+      <span>Solicitar valoración</span>
+    </div>
+    <div class="section-header">
+      <div class="section-label">Valoración gratuita</div>
+      <h2>¿Quieres saber cuánto vale tu propiedad?</h2>
+      <p>Rellena el formulario y te haremos una valoración personalizada sin compromiso</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0">
+  <div class="container" style="max-width:640px">
+    {% if success %}
+    <div class="alert alert-success" style="background:#dcfce7;color:#166534;padding:20px;border-radius:var(--radius-lg);margin-bottom:24px;text-align:center">
+      <i class="fas fa-check-circle" style="font-size:32px;margin-bottom:8px;display:block"></i>
+      <strong>{{ success }}</strong>
+    </div>
+    {% endif %}
+    {% if error %}
+    <div class="alert alert-error" style="background:#fee2e2;color:#991b1b;padding:20px;border-radius:var(--radius-lg);margin-bottom:24px;text-align:center">
+      <i class="fas fa-exclamation-circle" style="font-size:32px;margin-bottom:8px;display:block"></i>
+      <strong>{{ error }}</strong>
+    </div>
+    {% endif %}
+    <form method="POST" action="/valoracion" class="contact-form" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px">
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" name="name" required placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" name="phone" placeholder="614 28 51 35">
+        </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required placeholder="tu@email.com">
+        </div>
+        <div class="form-group">
+          <label>Tipo de propiedad</label>
+          <select name="property_type">
+            <option value="">Selecciona...</option>
+            <option value="piso">Piso</option>
+            <option value="casa">Casa / Chalet</option>
+            <option value="ático">Ático</option>
+            <option value="local">Local comercial</option>
+            <option value="garaje">Garaje</option>
+            <option value="terreno">Terreno / Solar</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group">
+          <label>Dirección aproximada</label>
+          <input type="text" name="address" placeholder="Calle, zona, barrio...">
+        </div>
+        <div class="form-group">
+          <label>Superficie aprox. (m²)</label>
+          <input type="number" name="surface" placeholder="0" min="0" step="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notas adicionales</label>
+        <textarea name="notes" rows="3" placeholder="Cuéntanos más sobre tu propiedad..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="width:100%;margin-top:8px">
+        <i class="fas fa-paper-plane"></i> Solicitar valoración gratuita
+      </button>
+    </form>
+  </div>
+</section>
+
+{% endblock %}

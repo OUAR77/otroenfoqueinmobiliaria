@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block title %}{{ site_name }} — Tu hogar, nuestro compromiso{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero-bg">
+    <img src="/static/images/hero-bg.jpg" alt="Propiedades en Almería" loading="lazy">
+  </div>
+  <div class="hero-glow">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-particles"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-home"></i> Inmobiliaria de confianza</div>
+      <h1>Tu agencia inmobiliaria <span>en Almería</span></h1>
+      <p>Compra, vende o alquila. La confianza que necesitas, está aquí.</p>
+      <div class="hero-actions">
+        <a href="/propiedades" class="btn btn-primary btn-lg">Ver propiedades <i class="fas fa-arrow-right"></i></a>
+        <a href="https://wa.me/34{{ whatsapp }}" target="_blank" class="btn btn-outline btn-outline-light btn-lg"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+      <div class="hero-search">
+        <form class="hero-search-inner" action="/propiedades" method="GET">
+          <input type="text" name="q" placeholder="Buscar por ubicación, tipo de propiedad..." aria-label="Buscar propiedades">
+          <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+        </form>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="hero-stat-value">100+</span>
+          <span class="hero-stat-label">Propiedades</span>
+        </div>
+        <div>
+          <span class="hero-stat-value">50+</span>
+          <span class="hero-stat-label">Clientes</span>
+        </div>
+        <div>
+          <span class="hero-stat-value">5+</span>
+          <span class="hero-stat-label">Años</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    DESCUBRE
+    <div class="mouse"><span></span></div>
+  </div>
+</section>
+
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Destacados</div>
+      <h2>Propiedades destacadas</h2>
+      <p>Las mejores oportunidades seleccionadas especialmente para ti</p>
+    </div>
+    <div class="properties-grid">
+      {% for p in featured %}
+      <a href="/propiedades/{{ p.slug }}" class="property-card reveal-scale">
+        <div class="property-card-image">
+          {% if p.images %}
+          <img src="{{ p.images | first_image }}" alt="{{ p.title }}" loading="lazy">
+          {% else %}
+          <div class="no-image"><i class="fas fa-home"></i></div>
+          {% endif %}
+          <div class="img-overlay"></div>
+          <span class="property-card-operation {{ p.operation }}">{{ p.operation == 'venta' and 'Venta' or (p.operation == 'traspaso' and 'Traspaso' or 'Alquiler') }}</span>
+          {% if p.featured %}<span class="property-card-featured"><i class="fas fa-star"></i> Destacado</span>{% endif %}
+        </div>
+        <div class="property-card-body">
+          <h3>{{ p.title }}</h3>
+          <div class="property-card-price">{{ "{:,.0f}".format(p.price).replace(",", ".") }} {{ p.currency or '€' }}{% if p.operation == 'traspaso' and p.rent %} <span style="font-size:11px;font-weight:400;color:var(--text2)">+{{ "{:,.0f}".format(p.rent).replace(",", ".") }}€/mes</span>{% endif %}</div>
+          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> {{ p.location }}</div>
+          <div class="property-card-meta">
+            {% if p.bedrooms > 0 %}<span><i class="fas fa-bed"></i> {{ p.bedrooms }} hab.</span>{% endif %}
+            {% if p.bathrooms > 0 %}<span><i class="fas fa-bath"></i> {{ p.bathrooms }} bañ.</span>{% endif %}
+            {% if p.surface > 0 %}<span><i class="fas fa-vector-square"></i> {{ "{:,.0f}".format(p.surface) }} m²</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-home"></i></div>
+        <h3>Próximamente</h3>
+        <p>Estamos añadiendo nuevas propiedades. ¡Vuelve pronto!</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:56px" class="reveal">
+      <a href="/propiedades" class="btn btn-outline btn-outline-dark btn-lg">Ver todas las propiedades <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Vende con nosotros</div>
+      <h2>¿Quieres vender tu propiedad?</h2>
+      <p>Te ofrecemos la mejor estrategia para vender tu inmueble al mejor precio y en el menor tiempo posible</p>
+    </div>
+    <div class="services-grid" style="max-width:100%">
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-euro-sign"></i></div>
+        <h3>Valoración gratuita</h3>
+        <p>Analizamos tu propiedad y te ofrecemos un precio de mercado realista y competitivo sin compromiso</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-camera"></i></div>
+        <h3>Reportaje profesional</h3>
+        <p>Fotografía y vídeo de alta calidad para mostrar tu propiedad en las mejores plataformas</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>Máxima difusión</h3>
+        <p>Publicamos tu anuncio en los principales portales inmobiliarios con alcance local y nacional</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-handshake"></i></div>
+        <h3>Acompañamiento total</h3>
+        <p>Te guiamos en todo el proceso: visitas, negociación, documentación y cierre de la venta</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-user-check"></i></div>
+        <h3>Asesoramiento financiero</h3>
+        <p>Filtramos clientes para no perder tu tiempo e ir al grano con la operación</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-globe"></i></div>
+        <h3>Red de colaboración nacional</h3>
+        <p>Tu vivienda llegará a otras inmobiliarias para atraer más clientes potenciales</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px" class="reveal">
+      <a href="https://wa.me/34{{ whatsapp }}?text=Hola%2C%20quiero%20vender%20mi%20propiedad" target="_blank" class="btn btn-primary btn-lg"><i class="fab fa-whatsapp"></i> Quiero vender</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-content reveal-left">
+        <div class="section-label">Sobre nosotros</div>
+        <h2>Otro Enfoque Inmobiliaria</h2>
+        <p>En <strong>Otro Enfoque</strong> entendemos que cada cliente es único. Por eso ofrecemos un servicio personalizado para ayudarte a encontrar la propiedad que realmente se adapta a tus necesidades.</p>
+        <p>Con años de experiencia en el sector inmobiliario, nuestro equipo te acompañará en cada paso del proceso, desde la búsqueda hasta el cierre de la operación.</p>
+        <div class="about-owner">
+          <img src="/static/images/image00034.jpeg" alt="Dueño de Otro Enfoque Inmobiliaria" class="owner-photo">
+          <div class="owner-info">
+            <strong>Jose Enrique Pomedio</strong>
+            <span>Director &amp; Agente Inmobiliario</span>
+          </div>
+        </div>
+        <a href="https://wa.me/34{{ whatsapp }}" class="btn btn-primary btn-lg" target="_blank"><i class="fab fa-whatsapp"></i> Contáctanos</a>
+      </div>
+      <div class="about-carousel reveal-right">
+        <div class="carousel-container" id="aboutCarousel">
+          <div class="carousel-track">
+            <div class="carousel-slide"><img src="/static/images/hero-bg.jpg" alt="Propiedad en Almería" loading="lazy"></div>
+            <div class="carousel-slide"><img src="/static/images/image00034.jpeg" alt="Propiedad en Almería" loading="lazy"></div>
+            <div class="carousel-slide"><img src="/static/images/image00035.jpeg" alt="Propiedad en Almería" loading="lazy"></div>
+            <div class="carousel-slide"><img src="/static/images/image00036.jpeg" alt="Propiedad en Almería" loading="lazy"></div>
+            <div class="carousel-slide"><img src="/static/images/image00049.jpeg" alt="Propiedad en Almería" loading="lazy"></div>
+          </div>
+          <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+          <button class="carousel-btn carousel-next" onclick="moveCarousel(1)" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+          <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Servicios</div>
+      <h2>¿Por qué elegirnos?</h2>
+      <p>Ofrecemos un servicio completo para que encuentres el hogar de tus sueños</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-handshake"></i></div>
+        <h3>Asesoramiento personalizado</h3>
+        <p>Te guiamos en cada paso para encontrar la propiedad ideal según tus necesidades</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-walking"></i></div>
+        <h3>Visitas guiadas</h3>
+        <p>Te mostramos viviendas de nuestra cartera y colaboramos con otras inmobiliarias para que encuentres lo que buscas</p>
+      </div>
+      <div class="service-card reveal-scale">
+        <div class="service-card-icon"><i class="fas fa-file-signature"></i></div>
+        <h3>Gestión documental</h3>
+        <p>Nos encargamos de toda la documentación para que la operación sea segura y transparente</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header centered reveal">
+      <div class="section-label">Testimonios</div>
+      <h2>Lo que dicen nuestros clientes</h2>
+      <p>La satisfacción de nuestros clientes es nuestra mejor carta de presentación</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal-scale">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Sin duda el mejor trato que puedes encontrar. Nos pusimos en manos de Jose Enrique para la venta de nuestra casa y fue todo un acierto. El trato, cercanía y su buen hacer en todo momento lo dicen todo de él. Si tuviese que confiar en alguien, ellos son los indicados tanto para vender como para comprar, tus sueños ellos los pueden hacer realidad."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <span class="testimonial-name">Sergio</span>
+            <span class="testimonial-role">Local Guide · Google Reviews</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal-scale">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"He hecho todas las gestiones desde Madrid con Jose Enrique, por teléfono y sin conocernos en persona. Qué amabilidad y qué profesionalidad. Da gusto encontrar personas que les gusta su trabajo y que lo único que les importa es hacerlo bien. Solo tengo palabras de agradecimiento. Después de unos meses duros, fue llamarle y ver un poco la luz."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SM</div>
+          <div>
+            <span class="testimonial-name">Sofía M M</span>
+            <span class="testimonial-role">Local Guide · Google Reviews</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal-scale">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Grandísimos profesionales. En seis meses vendieron mi casa, un trato buenísimo, disponibilidad siempre y te hacen sentir como una familia, amables y serios en su trabajo. Jose Enrique fue el contacto que me atendió con mucha profesionalidad, amabilidad y seriedad en su trabajo. Les doy un sobresaliente y mil gracias por todo, sois los mejores."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">JM</div>
+          <div>
+            <span class="testimonial-name">Jose Manuel Molina Rueda</span>
+            <span class="testimonial-role">Google Reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonials-footer reveal">
+      <a href="/resenas" class="btn btn-outline btn-outline-dark btn-lg">
+        <i class="fas fa-star"></i> Ver todas las reseñas (60+)
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

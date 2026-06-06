@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Admin — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:120px 0 40px">
+  <div class="container" style="max-width:960px">
+    <div class="breadcrumbs"><a href="/admin">Admin</a><span class="sep">/</span><span>Dashboard</span></div>
+    <div class="admin-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div class="section-header" style="padding:0;margin:0"><h2>Panel de control</h2></div>
+      <a href="/admin/propiedades" class="btn btn-outline btn-outline-dark btn-sm"><i class="fas fa-arrow-left"></i> Volver</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;text-align:center">
+        <div style="font-size:32px;font-weight:700;color:var(--red)">{{ total_props }}</div>
+        <div style="font-size:13px;color:var(--text-tertiary);margin-top:4px">Propiedades</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;text-align:center">
+        <div style="font-size:32px;font-weight:700;color:var(--red)">{{ total_views }}</div>
+        <div style="font-size:13px;color:var(--text-tertiary);margin-top:4px">Visitas totales</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;text-align:center">
+        <div style="font-size:32px;font-weight:700;color:var(--red)">{{ total_messages }}</div>
+        <div style="font-size:13px;color:var(--text-tertiary);margin-top:4px">Mensajes</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;text-align:center">
+        <div style="font-size:32px;font-weight:700;color:var(--red)">{{ total_valuations }}</div>
+        <div style="font-size:13px;color:var(--text-tertiary);margin-top:4px">Tasaciones</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px">
+        <h3 style="font-size:15px;margin-bottom:16px">Propiedades más vistas</h3>
+        {% if top_props %}
+        <table style="width:100%;font-size:13px">
+          <tr style="border-bottom:1px solid var(--border-light)"><th style="text-align:left;padding:6px">Título</th><th style="text-align:right;padding:6px">Visitas</th></tr>
+          {% for p in top_props %}
+          <tr><td style="padding:6px"><a href="/admin/propiedades/{{ p.id }}/editar">{{ p.title }}</a></td><td style="padding:6px;text-align:right">{{ p.views or 0 }}</td></tr>
+          {% endfor %}
+        </table>
+        {% else %}<p style="font-size:13px;color:var(--text-tertiary)">Aún no hay propiedades.</p>{% endif %}
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px">
+        <h3 style="font-size:15px;margin-bottom:16px">Últimas solicitudes de valoración</h3>
+        {% if recent_valuations %}
+          {% for v in recent_valuations %}
+          <div style="font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-light)">
+            <strong>{{ v.name }}</strong><br>
+            <span style="color:var(--text-tertiary)">{{ v.property_type or '-' }} · {{ v.created_at.strftime('%d/%m/%Y') }}</span>
+          </div>
+          {% endfor %}
+        {% else %}<p style="font-size:13px;color:var(--text-tertiary)">Sin solicitudes.</p>{% endif %}
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+      <a href="/admin/propiedades" class="btn btn-outline btn-outline-dark" style="font-size:13px">Gestionar propiedades</a>
+      <a href="/admin/blog" class="btn btn-outline btn-outline-dark" style="font-size:13px">Gestionar blog</a>
+      <a href="/admin/mensajes" class="btn btn-outline btn-outline-dark" style="font-size:13px">Mensajes</a>
+      <a href="/admin/valoraciones" class="btn btn-outline btn-outline-dark" style="font-size:13px">Tasaciones</a>
+      <a href="/admin/alertas" class="btn btn-outline btn-outline-dark" style="font-size:13px">Alertas</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

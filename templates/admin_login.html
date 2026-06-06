@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Admin — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:120px 0 40px">
+  <div class="container">
+    <div style="max-width:360px;margin:0 auto;text-align:center;padding:48px 0">
+      <img src="/static/logos/logo-transparent.png" alt="{{ site_name }}" style="height:52px;margin-bottom:28px">
+      <h2 style="font-family:var(--font-heading);font-size:20px;margin-bottom:28px">Acceso Administrador</h2>
+      <form method="POST" action="/admin">
+        <input type="password" name="password" placeholder="Contraseña" required style="width:100%;padding:14px 18px;border:1px solid var(--border);border-radius:100px;font-size:14px;text-align:center;font-family:var(--font-body);outline:none;margin-bottom:14px">
+        <button type="submit" class="btn btn-primary btn-lg btn-block" style="border-radius:100px">Acceder</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

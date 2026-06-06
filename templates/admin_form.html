@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}{% if p %}Editar{% else %}Nueva{% endif %} propiedad — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h2>{% if p %}Editar: {{ p.title }}{% else %}Nueva propiedad{% endif %}</h2>
+      <a href="/admin/propiedades" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Volver</a>
+    </div>
+
+    <form method="POST" action="{% if p %}/admin/propiedades/{{ p.id }}/editar{% else %}/admin/propiedades/nueva{% endif %}" class="admin-form" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Título</label>
+          <input type="text" name="title" value="{{ p.title if p else '' }}" required>
+        </div>
+        <div class="form-group">
+          <label>Precio (€)</label>
+          <input type="number" name="price" step="0.01" value="{{ p.price if p else '' }}" required>
+        </div>
+        <div class="form-group">
+          <label>Operación</label>
+          <select name="operation">
+            <option value="venta" {{ 'selected' if p and p.operation == 'venta' }}>Venta</option>
+            <option value="alquiler" {{ 'selected' if p and p.operation == 'alquiler' }}>Alquiler</option>
+            <option value="traspaso" {{ 'selected' if p and p.operation == 'traspaso' }}>Traspaso</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Alquiler mensual (€) — solo para traspaso</label>
+          <input type="number" name="rent" step="0.01" value="{{ p.rent if p and p.rent else '' }}" placeholder="Ej: 1200">
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select name="property_type">
+            <option value="piso" {{ 'selected' if p and p.property_type == 'piso' }}>Piso</option>
+            <option value="casa" {{ 'selected' if p and p.property_type == 'casa' }}>Casa</option>
+            <option value="chalet" {{ 'selected' if p and p.property_type == 'chalet' }}>Chalet</option>
+            <option value="local" {{ 'selected' if p and p.property_type == 'local' }}>Local</option>
+            <option value="terreno" {{ 'selected' if p and p.property_type == 'terreno' }}>Terreno</option>
+            <option value="garaje" {{ 'selected' if p and p.property_type == 'garaje' }}>Garaje</option>
+            <option value="oficina" {{ 'selected' if p and p.property_type == 'oficina' }}>Oficina</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Habitaciones</label>
+          <input type="number" name="bedrooms" value="{{ p.bedrooms if p else 0 }}">
+        </div>
+        <div class="form-group">
+          <label>Baños</label>
+          <input type="number" name="bathrooms" value="{{ p.bathrooms if p else 0 }}">
+        </div>
+        <div class="form-group">
+          <label>Superficie (m²)</label>
+          <input type="number" name="surface" step="0.1" value="{{ p.surface if p else 0 }}">
+        </div>
+        <div class="form-group">
+          <label>Ubicación</label>
+          <input type="text" name="location" value="{{ p.location if p else '' }}" placeholder="Ciudad, barrio">
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" name="address" value="{{ p.address if p else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Latitud</label>
+          <input type="number" name="latitude" step="any" value="{{ p.latitude if p else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Longitud</label>
+          <input type="number" name="longitude" step="any" value="{{ p.longitude if p else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Características (separadas por coma)</label>
+          <input type="text" name="features" value="{{ p.features if p else '' }}" placeholder="Ascensor, Parking, Terraza">
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select name="status">
+            <option value="disponible" {{ 'selected' if p and p.status == 'disponible' }}>Disponible</option>
+            <option value="vendido" {{ 'selected' if p and p.status == 'vendido' }}>Vendido</option>
+            <option value="reservado" {{ 'selected' if p and p.status == 'reservado' }}>Reservado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Video URL (enlace externo)</label>
+          <input type="text" name="video_url" value="{{ p.video_url if p else '' }}" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Subir video (archivo)</label>
+          <input type="file" name="video_file" accept="video/*" style="width:100%;padding:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.8rem">
+          {% if p and p.video_url and not p.video_url.startswith('http') %}
+          <p style="font-size:.8rem;color:var(--text2);margin-top:4px">Video actual: {{ p.video_url }}</p>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label>Tour virtual 360° URL</label>
+          <input type="text" name="tour_url" value="{{ p.tour_url if p else '' }}" placeholder="https://matterport.com/...">
+        </div>
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="featured" value="true" {% if p and p.featured %}checked{% endif %}>
+            Propiedad destacada
+          </label>
+        </div>
+        <div class="form-group full">
+          <label>Descripción</label>
+          <textarea name="description" rows="5">{{ p.description if p else '' }}</textarea>
+        </div>
+        <div class="form-group full" style="border:2px dashed var(--primary);border-radius:12px;padding:24px;background:rgba(124,58,237,.05)">
+          <label style="color:var(--primary);font-weight:600;font-size:1.1rem;margin-bottom:4px;display:block">📸 Fotos</label>
+          <p style="color:var(--text2);font-size:.85rem;margin-bottom:16px">Selecciona fotos para cada zona.</p>
+          {% set cat_list = [('salon','Salón'),('cocina','Cocina'),('dormitorio','Dormitorios'),('general','General'),('banyo','Baños'),('terraza','Terraza / Exterior'),('piscina','Piscina'),('garaje','Garaje'),('entrada','Entrada'),('otras','Otras estancias')] %}
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+          {% for key,label in cat_list %}
+          <div>
+            <label style="font-size:.85rem;color:var(--text2);display:block;margin-bottom:4px">{{ label }}</label>
+            <input type="file" name="files_{{ key }}" multiple accept="image/*" style="width:100%;padding:6px;font-size:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text)">
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">{% if p %}Guardar cambios{% else %}Crear propiedad{% endif %}</button>
+    </form>
+
+    {% if p %}
+    <hr class="divider" style="margin:24px 0;border-color:var(--primary)">
+    <div style="background:rgba(124,58,237,.08);border:2px dashed var(--primary);border-radius:12px;padding:24px;text-align:center;margin-bottom:16px">
+      <h3 style="color:var(--primary);font-size:1.1rem;margin-bottom:4px">📸 Imágenes de la propiedad</h3>
+      <p style="color:var(--text2);font-size:.85rem;margin-bottom:16px">Añade las fotos una vez creada la propiedad</p>
+      <form method="POST" action="/admin/propiedades/{{ p.id }}/upload" enctype="multipart/form-data" style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <input type="file" name="files" multiple accept="image/*" required id="fileInput" style="max-width:400px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text)">
+        <button type="submit" class="btn btn-primary" style="padding:10px 32px">📤 Subir fotos</button>
+      </form>
+    </div>
+
+    {% set groups = p.images | group_images %}
+    {% for g in groups %}
+    <div style="margin-top:24px">
+      <h4 style="margin-bottom:8px;font-size:.95rem;color:var(--text2)">{{ g.label }} ({{ g.images|length }})</h4>
+      <div class="image-grid">
+      {% for src in g.images %}
+        <div class="image-item">
+          <img src="{{ src }}" alt="">
+          <form method="POST" action="/admin/propiedades/{{ p.id }}/delete-image" onsubmit="return confirm('¿Eliminar esta imagen?')">
+            <input type="hidden" name="image" value="{{ src }}">
+            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+          </form>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

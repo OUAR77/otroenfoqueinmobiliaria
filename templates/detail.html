@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }} — {{ site_name }}{% endblock %}
+{% block content %}
+
+<div class="container" style="padding-top:24px">
+  <div class="breadcrumbs">
+    <a href="/">Inicio</a>
+    <span class="sep">/</span>
+    <a href="/propiedades">Propiedades</a>
+    <span class="sep">/</span>
+    <span>{{ p.title }}</span>
+  </div>
+</div>
+
+<section class="detail-top">
+  <div class="container">
+    <div class="detail-top-layout">
+      <div class="detail-top-gallery">
+        <div class="detail-hero">
+          <div class="slider-track" id="sliderTrack">
+            {% for item in images_list %}
+            <div class="slider-slide{% if loop.first %} active{% endif %}">
+              <img src="{{ item.src }}" alt="{{ p.title }}" loading="lazy">
+              <div class="slider-cat">{{ categories.get(item.cat, item.cat) }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% if images|length > 1 %}
+          <button class="slider-arrow slider-prev" onclick="slideImg(-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="slider-arrow slider-next" onclick="slideImg(1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="slider-counter" id="sliderCounter">1 / {{ images|length }}</div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="detail-top-info">
+        <h1>{{ p.title }}</h1>
+        <div class="detail-price">{{ "{:,.0f}".format(p.price).replace(",", ".") }} {{ p.currency or '€' }}{% if p.operation == 'traspaso' and p.rent %} <span style="font-size:14px;font-weight:400;color:var(--text2)">+ {{ "{:,.0f}".format(p.rent).replace(",", ".") }} €/mes</span>{% endif %}</div>
+        <div class="detail-location"><i class="fas fa-map-marker-alt"></i> {{ p.location }}</div>
+
+        <div class="detail-meta-strip" style="grid-template-columns:repeat(2,1fr);margin:20px 0">
+          {% if p.bedrooms > 0 %}
+          <div class="detail-meta-item">
+            <i class="fas fa-bed"></i>
+            <span class="meta-value">{{ p.bedrooms }}</span>
+            <span class="meta-label">Habitaciones</span>
+          </div>
+          {% endif %}
+          {% if p.bathrooms > 0 %}
+          <div class="detail-meta-item">
+            <i class="fas fa-bath"></i>
+            <span class="meta-value">{{ p.bathrooms }}</span>
+            <span class="meta-label">Baños</span>
+          </div>
+          {% endif %}
+          {% if p.surface > 0 %}
+          <div class="detail-meta-item">
+            <i class="fas fa-vector-square"></i>
+            <span class="meta-value">{{ "{:,.0f}".format(p.surface) }}</span>
+            <span class="meta-label">M²</span>
+          </div>
+          {% endif %}
+          <div class="detail-meta-item">
+            <i class="fas fa-tag"></i>
+            {% if p.property_type %}<span class="meta-value" style="text-transform:capitalize;font-size:14px">{{ p.property_type }}</span>{% endif %}
+            <span class="meta-label">{{ p.operation == 'venta' and 'Venta' or (p.operation == 'traspaso' and 'Traspaso' or 'Alquiler') }}</span>
+          </div>
+        </div>
+
+        <a href="https://wa.me/34{{ whatsapp }}?text={{ whatsapp_msg }}" target="_blank" class="btn btn-primary btn-lg btn-block" style="border-radius:12px;margin-top:8px">
+          <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
+        </a>
+        <a href="tel:+34{{ whatsapp }}" class="btn btn-outline btn-outline-dark btn-block" style="border-radius:12px;margin-top:8px">
+          <i class="fas fa-phone"></i> Llamar ahora
+        </a>
+
+        {% if p.address %}
+        <p style="font-size:13px;color:var(--text-tertiary);margin-top:16px;display:flex;align-items:center;gap:6px"><i class="fas fa-map-pin"></i> {{ p.address }}</p>
+        {% endif %}
+
+        {% if p.latitude and p.longitude %}
+        <div class="detail-top-map">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox={{ p.longitude - 0.01 }}%2C{{ p.latitude - 0.01 }}%2C{{ p.longitude + 0.01 }}%2C{{ p.latitude + 0.01 }}&amp;layer=mapnik&amp;marker={{ p.latitude }}%2C{{ p.longitude }}"
+            style="border:none"></iframe>
+        </div>
+        {% endif %}
+
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <a href="https://wa.me/?text={{ p.title }} - {{ request.url }}" target="_blank" class="btn btn-sm btn-primary" style="flex:1;border-radius:10px">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a href="mailto:?subject={{ p.title }}&body=Mira esta propiedad: {{ request.url }}" class="btn btn-sm btn-outline-dark" style="flex:1;border-radius:10px">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="detail-body">
+  <div class="container">
+    {% if p.description %}
+    <div class="detail-section-block reveal">
+      <h3>Descripción</h3>
+      <p>{{ p.description }}</p>
+    </div>
+    {% endif %}
+
+    {% if features %}
+    <div class="detail-section-block reveal">
+      <h3>Características</h3>
+      <ul class="detail-features">
+        {% for f in features %}
+        <li><i class="fas fa-check-circle"></i> {{ f }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if p.video_url %}
+    <div class="detail-section-block reveal">
+      <h3>Video</h3>
+      <video src="{{ p.video_url }}" controls style="width:100%;border-radius:var(--radius-md)"></video>
+    </div>
+    {% endif %}
+
+    {% if p.tour_url %}
+    <div class="detail-section-block reveal">
+      <h3>Tour virtual 360°</h3>
+      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-md)">
+        <iframe src="{{ p.tour_url }}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if grouped_images %}
+<section class="section" style="padding-top:0">
+  <div class="container">
+    {% for label, srcs in grouped_images %}
+    <div style="margin-bottom:40px">
+      <h3 style="font-family:var(--font-heading);font-size:1.3rem;margin-bottom:16px">{{ label }}</h3>
+      <div class="image-grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">
+        {% for src in srcs %}
+        <div class="image-item" style="border-radius:12px;overflow:hidden;aspect-ratio:4/3">
+          <img src="{{ src }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Lightbox overlay -->
+<div class="lightbox-overlay" id="lightbox">
+  <span class="lightbox-close" id="lightboxClose">&times;</span>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+  <button class="lightbox-arrow lightbox-prev" id="lightboxPrev"><i class="fas fa-chevron-left"></i></button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <button class="lightbox-arrow lightbox-next" id="lightboxNext"><i class="fas fa-chevron-right"></i></button>
+  <div class="lightbox-cat" id="lightboxCat"></div>
+</div>
+
+<script>
+(function(){
+  var images = [{% for img in images %}
+    '{{ img }}'{% if not loop.last %},{% endif %}{% endfor %}
+  ];
+  var catLabels = [{% for item in images_list %}
+    '{{ categories.get(item.cat, item.cat) }}'{% if not loop.last %},{% endif %}{% endfor %}
+  ];
+  var allSlides = document.querySelectorAll('.slider-slide img');
+  var groupedImages = document.querySelectorAll('.image-item img');
+  var slides = document.querySelectorAll('.slider-slide');
+  var counter = document.getElementById('sliderCounter');
+  var current = 0;
+
+  function show(i) {
+    slides.forEach(function(s){ s.classList.remove('active'); });
+    if (i < 0) i = slides.length - 1;
+    if (i >= slides.length) i = 0;
+    current = i;
+    slides[current].classList.add('active');
+    if (counter) counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+  window.slideImg = function(dir) { show(current + dir); };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') { show(current - 1); }
+    if (e.key === 'ArrowRight') { show(current + 1); }
+  });
+
+  // Lightbox
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  var lbClose = document.getElementById('lightboxClose');
+  var lbPrev = document.getElementById('lightboxPrev');
+  var lbNext = document.getElementById('lightboxNext');
+  var lbCounter = document.getElementById('lightboxCounter');
+  var lbCat = document.getElementById('lightboxCat');
+  var lbCurrent = 0;
+
+  function openLightbox(idx) {
+    if (images.length === 0) return;
+    lbCurrent = idx;
+    lbImg.src = images[lbCurrent];
+    lbCounter.textContent = (lbCurrent + 1) + ' / ' + images.length;
+    if (lbCat) lbCat.textContent = catLabels[lbCurrent];
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function lightboxMove(dir) {
+    lbCurrent += dir;
+    if (lbCurrent < 0) lbCurrent = images.length - 1;
+    if (lbCurrent >= images.length) lbCurrent = 0;
+    lbImg.src = images[lbCurrent];
+    lbCounter.textContent = (lbCurrent + 1) + ' / ' + images.length;
+    if (lbCat) lbCat.textContent = catLabels[lbCurrent];
+  }
+
+  // Click slider images
+  allSlides.forEach(function(img, idx) {
+    img.addEventListener('click', function() { openLightbox(idx); });
+  });
+
+  // Click grouped images (need to find index in master images list)
+  groupedImages.forEach(function(img) {
+    img.addEventListener('click', function() {
+      var src = img.getAttribute('src');
+      var idx = images.indexOf(src);
+      if (idx !== -1) openLightbox(idx);
+    });
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', function() { lightboxMove(-1); });
+  lbNext.addEventListener('click', function() { lightboxMove(1); });
+
+  // Click outside image to close
+  lb.addEventListener('click', function(e) {
+    if (e.target === lb) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!lb.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxMove(-1);
+    if (e.key === 'ArrowRight') lightboxMove(1);
+  });
+})();
+</script>
+
+{% endblock %}

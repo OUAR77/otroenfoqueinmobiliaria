@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Reseñas de clientes — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:140px 0 40px">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="/">Inicio</a>
+      <span class="sep">/</span>
+      <span>Reseñas de clientes</span>
+    </div>
+    <div class="section-header">
+      <div class="section-label">Testimonios</div>
+      <h2>Lo que dicen nuestros clientes</h2>
+      <p>Más de 60 reseñas reales de clientes satisfechos en Google</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0">
+  <div class="container">
+    <div class="reviews-grid">
+      {% for r in reviews %}
+      <div class="review-card reveal">
+        <div class="review-card-stars">★★★★★</div>
+        <p class="review-card-text">"{{ r.text }}"</p>
+        <div class="review-card-author">
+          <div class="review-card-avatar">{{ r.name[:2] }}</div>
+          <div>
+            <div class="review-card-name">{{ r.name }}</div>
+            <div class="review-card-role">{{ r.role }}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+.reviews-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:960px;margin:0 auto}
+@media(max-width:768px){.reviews-grid{grid-template-columns:1fr}}
+.review-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:all var(--transition)}
+.review-card:hover{border-color:transparent;box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.review-card-stars{color:var(--red);font-size:14px;letter-spacing:2px;margin-bottom:12px}
+.review-card-text{font-size:14px;color:var(--text-secondary);line-height:1.8;font-style:italic;margin-bottom:20px}
+.review-card-author{display:flex;align-items:center;gap:14px}
+.review-card-avatar{width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.review-card-name{font-size:15px;font-weight:600}
+.review-card-role{font-size:12px;color:var(--text-tertiary)}
+</style>
+
+{% endblock %}

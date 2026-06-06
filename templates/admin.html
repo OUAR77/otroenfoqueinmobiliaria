@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Admin — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section admin-section">
+  <div class="container">
+    <div class="admin-header">
+      <h2>Panel de Administración</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="/admin/dashboard" class="btn btn-outline btn-outline-dark"><i class="fas fa-chart-bar"></i> Dashboard</a>
+        <a href="/admin/blog" class="btn btn-outline btn-outline-dark"><i class="fas fa-newspaper"></i> Blog</a>
+        <a href="/admin/mensajes" class="btn btn-outline btn-outline-dark"><i class="fas fa-inbox"></i> Mensajes</a>
+        <a href="/admin/valoraciones" class="btn btn-outline btn-outline-dark"><i class="fas fa-home"></i> Tasaciones</a>
+        <a href="/admin/alertas" class="btn btn-outline btn-outline-dark"><i class="fas fa-bell"></i> Alertas</a>
+        <a href="/admin/propiedades/nueva" class="btn btn-primary"><i class="fas fa-plus"></i> Nueva propiedad</a>
+      </div>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Imagen</th>
+            <th>Título</th>
+            <th>Precio</th>
+            <th>Operación</th>
+            <th>Visitas</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in properties %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td>
+              {% if p.images %}
+              <img src="{{ p.images | first_image }}" class="admin-thumb">
+              {% else %}
+              <div class="admin-thumb empty"></div>
+              {% endif %}
+            </td>
+            <td>{{ p.title }}</td>
+            <td>{{ "{:,.0f}".format(p.price).replace(",", ".") }} {{ p.currency }}</td>
+            <td><span class="badge {{ p.operation }}">{{ p.operation }}</span></td>
+            <td>{{ p.views or 0 }}</td>
+            <td><span class="badge {{ p.status }}">{{ p.status }}</span></td>
+            <td class="actions">
+              <a href="/admin/propiedades/{{ p.id }}/editar" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></a>
+              <form method="POST" action="/admin/propiedades/{{ p.id }}/delete" style="display:inline" onsubmit="return confirm('¿Eliminar esta propiedad?')">
+                <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="9" class="empty">No hay propiedades aún. <a href="/admin/propiedades/nueva">Añadir primera</a></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

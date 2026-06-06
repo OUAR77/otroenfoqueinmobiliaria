@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Tasaciones — Admin — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:120px 0 40px">
+  <div class="container" style="max-width:960px">
+    <div class="breadcrumbs"><a href="/admin">Admin</a><span class="sep">/</span><span>Tasaciones</span></div>
+    <div class="admin-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div class="section-header" style="padding:0;margin:0"><h2>Solicitudes de valoración</h2></div>
+      <a href="/admin/propiedades" class="btn btn-outline btn-outline-dark btn-sm"><i class="fas fa-arrow-left"></i> Volver</a>
+    </div>
+    {% if valuations %}
+    <table style="width:100%;font-size:13px;border-collapse:collapse">
+      <tr style="border-bottom:2px solid var(--border)"><th style="text-align:left;padding:10px">Nombre</th><th style="text-align:left;padding:10px">Email</th><th style="text-align:left;padding:10px">Teléfono</th><th style="text-align:left;padding:10px">Tipo</th><th style="text-align:right;padding:10px">Fecha</th><th style="text-align:right;padding:10px"></th></tr>
+      {% for v in valuations %}
+      <tr style="border-bottom:1px solid var(--border-light)">
+        <td style="padding:10px">{{ v.name }}{% if not v.is_read %} <span style="background:var(--red);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px">NUEVA</span>{% endif %}</td>
+        <td style="padding:10px;color:var(--text-tertiary)">{{ v.email }}</td>
+        <td style="padding:10px">{{ v.phone }}</td>
+        <td style="padding:10px">{{ v.property_type or '-' }}</td>
+        <td style="padding:10px;text-align:right;color:var(--text-tertiary)">{{ v.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td style="padding:10px;text-align:right">
+          <form method="POST" action="/admin/valoraciones/{{ v.id }}/delete" style="display:inline" onsubmit="return confirm('¿Eliminar esta solicitud?')">
+            <button type="submit" class="btn btn-outline btn-outline-dark" style="font-size:11px;padding:4px 10px;color:var(--red);border-color:var(--red)">Borrar</button>
+          </form>
+        </td>
+      </tr>
+      {% if v.notes %}<tr style="border-bottom:1px solid var(--border-light)"><td colspan="6" style="padding:4px 10px 12px;font-size:12px;color:var(--text-tertiary)"><strong>Notas:</strong> {{ v.notes }}</td></tr>{% endif %}
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty-state"><div class="empty-state-icon"><i class="fas fa-home"></i></div><h3>Sin solicitudes</h3><p>No hay solicitudes de valoración todavía.</p></div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

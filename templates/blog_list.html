@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Blog — {{ site_name }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:140px 0 40px">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="/">Inicio</a>
+      <span class="sep">/</span>
+      <span>Blog</span>
+    </div>
+    <div class="section-header">
+      <div class="section-label">Blog</div>
+      <h2>Artículos y consejos</h2>
+      <p>Guías, noticias y recomendaciones sobre el mundo inmobiliario en Almería</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0">
+  <div class="container">
+    {% if posts %}
+    <div class="posts-grid">
+      {% for post in posts %}
+      <a href="/blog/{{ post.slug }}" class="post-card reveal-scale">
+        <div class="post-card-image">
+          {% if post.image %}
+          <img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy">
+          {% else %}
+          <div class="no-image" style="height:200px"><i class="fas fa-newspaper"></i></div>
+          {% endif %}
+        </div>
+        <div class="post-card-body">
+          <h3>{{ post.title }}</h3>
+          {% if post.excerpt %}<p>{{ post.excerpt[:200] }}{% if post.excerpt|length > 200 %}...{% endif %}</p>{% endif %}
+          <div class="post-card-meta">
+            <span><i class="fas fa-user"></i> {{ post.author }}</span>
+            <span><i class="fas fa-calendar-alt"></i> {{ post.created_at.strftime('%d/%m/%Y') }}</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon"><i class="fas fa-newspaper"></i></div>
+      <h3>Próximamente</h3>
+      <p>Estamos preparando artículos interesantes para ti. ¡Vuelve pronto!</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:960px;margin:0 auto}
+@media(max-width:768px){.posts-grid{grid-template-columns:1fr}}
+@media(min-width:769px)and(max-width:1024px){.posts-grid{grid-template-columns:repeat(2,1fr)}}
+.post-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all var(--transition);text-decoration:none;color:inherit;display:flex;flex-direction:column}
+.post-card:hover{border-color:transparent;box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.post-card-image img,.post-card-image .no-image{width:100%;height:200px;object-fit:cover}
+.post-card-body{padding:24px;flex:1;display:flex;flex-direction:column}
+.post-card-body h3{font-family:var(--font-heading);font-size:16px;margin-bottom:8px;color:var(--text-primary)}
+.post-card-body p{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px;flex:1}
+.post-card-meta{display:flex;gap:16px;font-size:12px;color:var(--text-tertiary);margin-top:auto}
+.post-card-date{font-size:12px;color:var(--text-tertiary)}
+</style>
+
+{% endblock %}

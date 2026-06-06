@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Propiedades — {{ site_name }}{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css" />
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.js"></script>
+{% endblock %}
+{% block content %}
+
+<section class="section" style="padding:100px 0 20px">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="/">Inicio</a>
+      <span class="sep">/</span>
+      <span>Propiedades</span>
+    </div>
+    <div class="section-header" style="margin-bottom:32px">
+      <div class="section-label">Catálogo</div>
+      <h2>Propiedades</h2>
+      <p>Encuentra la propiedad perfecta para ti entre nuestra amplia selección</p>
+    </div>
+  </div>
+</section>
+
+<section class="search-section">
+  <div class="container">
+    <div class="filter-bar">
+      <button id="filterToggle" class="filter-toggle" type="button"><i class="fas fa-sliders-h"></i> Filtros <i class="fas fa-chevron-down"></i></button>
+      <div class="filter-quick">
+        <a href="/propiedades?operation=venta" class="filter-tag {{ 'active' if request.query_params.operation == 'venta' }}">Venta</a>
+        <a href="/propiedades?operation=alquiler" class="filter-tag {{ 'active' if request.query_params.operation == 'alquiler' }}">Alquiler</a>
+        <a href="/propiedades?operation=traspaso" class="filter-tag {{ 'active' if request.query_params.operation == 'traspaso' }}">Traspaso</a>
+        <a href="/propiedades?tipo=piso" class="filter-tag {{ 'active' if request.query_params.tipo == 'piso' }}">Pisos</a>
+        <a href="/propiedades?tipo=casa" class="filter-tag {{ 'active' if request.query_params.tipo == 'casa' }}">Casas</a>
+        <a href="/propiedades?tipo=ático" class="filter-tag {{ 'active' if request.query_params.tipo == 'ático' }}">Áticos</a>
+      </div>
+    </div>
+    <form id="filterForm" class="search-inner" method="GET" action="/propiedades">
+      <input type="text" name="q" placeholder="Buscar..." value="{{ request.query_params.q or '' }}">
+      <select name="operation">
+        <option value="">Todos</option>
+        <option value="venta" {{ 'selected' if request.query_params.operation == 'venta' }}>Venta</option>
+        <option value="alquiler" {{ 'selected' if request.query_params.operation == 'alquiler' }}>Alquiler</option>
+        <option value="traspaso" {{ 'selected' if request.query_params.operation == 'traspaso' }}>Traspaso</option>
+      </select>
+      <select name="tipo">
+        <option value="">Todos los tipos</option>
+        {% for t in property_types %}
+        <option value="{{ t }}" {{ 'selected' if request.query_params.tipo == t }}>{{ t|capitalize }}</option>
+        {% endfor %}
+      </select>
+      <select name="bedrooms">
+        <option value="">Cualquier habitación</option>
+        <option value="1" {{ 'selected' if request.query_params.bedrooms == '1' }}>1+</option>
+        <option value="2" {{ 'selected' if request.query_params.bedrooms == '2' }}>2+</option>
+        <option value="3" {{ 'selected' if request.query_params.bedrooms == '3' }}>3+</option>
+        <option value="4" {{ 'selected' if request.query_params.bedrooms == '4' }}>4+</option>
+      </select>
+      <input type="number" name="min_price" placeholder="Precio mín." value="{{ request.query_params.min_price or '' }}" class="price-input">
+      <input type="number" name="max_price" placeholder="Precio máx." value="{{ request.query_params.max_price or '' }}" class="price-input">
+      <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Buscar</button>
+      <a href="/propiedades" class="btn btn-outline btn-outline-dark btn-sm"><i class="fas fa-times"></i></a>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="results-header">
+      <div class="results-count">{{ properties|length }} {{ 'propiedad encontrada' if properties|length == 1 else 'propiedades encontradas' }}</div>
+      <button id="mapToggle" class="btn btn-outline btn-outline-dark btn-sm" style="font-size:12px;padding:8px 16px;border-radius:8px"><i class="fas fa-map"></i> <span id="mapToggleText">Ocultar mapa</span></button>
+      <button id="map3dBtn" class="btn btn-outline btn-outline-dark btn-sm" style="font-size:12px;padding:8px 16px;border-radius:8px"><i class="fas fa-cube"></i> <span id="map3dText">2D</span></button>
+    </div>
+    <div id="propertiesMap" style="border-radius:var(--radius-lg);margin-bottom:32px;border:1px solid var(--border-light);z-index:1"></div>
+    <div class="properties-grid" id="propertiesGrid">
+      {% for p in properties %}
+      <a href="/propiedades/{{ p.slug }}" class="property-card" data-lat="{{ p.latitude or '' }}" data-lng="{{ p.longitude or '' }}" data-title="{{ p.title }}" data-price="{{ "{:,.0f}".format(p.price).replace(",", ".") }} €" data-location="{{ p.location }}" data-img="{{ p.images | first_image }}">
+        <div class="property-card-image">
+          {% if p.images %}
+          <img src="{{ p.images | first_image }}" alt="{{ p.title }}" loading="lazy">
+          {% else %}
+          <div class="no-image"><i class="fas fa-home"></i></div>
+          {% endif %}
+          <div class="img-overlay"></div>
+          <span class="property-card-operation {{ p.operation }}">{{ p.operation == 'venta' and 'Venta' or (p.operation == 'traspaso' and 'Traspaso' or 'Alquiler') }}</span>
+          {% if p.featured %}<span class="property-card-featured"><i class="fas fa-star"></i> Destacado</span>{% endif %}
+        </div>
+        <div class="property-card-body">
+          <h3>{{ p.title }}</h3>
+          <div class="property-card-price">{{ "{:,.0f}".format(p.price).replace(",", ".") }} {{ p.currency or '€' }}{% if p.operation == 'traspaso' and p.rent %} <span style="font-size:11px;font-weight:400;color:var(--text2)">+{{ "{:,.0f}".format(p.rent).replace(",", ".") }}€/mes</span>{% endif %}</div>
+          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> {{ p.location }}</div>
+          <div class="property-card-meta">
+            {% if p.bedrooms > 0 %}<span><i class="fas fa-bed"></i> {{ p.bedrooms }} hab.</span>{% endif %}
+            {% if p.bathrooms > 0 %}<span><i class="fas fa-bath"></i> {{ p.bathrooms }} bañ.</span>{% endif %}
+            {% if p.surface > 0 %}<span><i class="fas fa-vector-square"></i> {{ "{:,.0f}".format(p.surface) }} m²</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-search"></i></div>
+        <h3>Sin resultados</h3>
+        <p>No encontramos propiedades con esos criterios. Intenta ajustar los filtros.</p>
+        <a href="/propiedades" class="btn btn-outline btn-outline-dark" style="margin-top:20px">Limpiar filtros</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+#propertiesMap{height:400px;transition:height 0.3s,opacity 0.3s;overflow:hidden}
+#propertiesMap.collapsed{height:0 !important;opacity:0;margin:0 !important;padding:0 !important;border:none !important}
+.maplibregl-popup-content-wrapper{border-radius:12px !important;padding:0 !important;overflow:hidden}
+.maplibregl-popup-content{margin:0}
+@media(max-width:768px){
+#propertiesMap{height:200px !important;touch-action:pan-y pinch-zoom}}
+</style>
+<script>
+// Filter toggle
+(function() {
+  var ft = document.getElementById('filterToggle');
+  var ff = document.getElementById('filterForm');
+  if (!ft || !ff) return;
+  ff.classList.add('collapsed');
+  ft.addEventListener('click', function() {
+    ff.classList.toggle('collapsed');
+    ft.classList.toggle('active');
+  });
+})();
+</script>
+<script>
+// Map
+(function() {
+  var c = document.getElementById('propertiesMap');
+  var g = document.getElementById('propertiesGrid');
+  var tb = document.getElementById('mapToggle');
+  var tt = document.getElementById('mapToggleText');
+  if (!c || !g) return;
+  var cards = g.querySelectorAll('.property-card');
+  var is3D = true;
+  var m = new maplibregl.Map({
+    container: 'propertiesMap',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [-2.458, 36.838],
+    zoom: 12,
+    pitch: 45,
+    attributionControl: true
+  });
+  m.addControl(new maplibregl.NavigationControl(), 'top-right');
+  var b3 = document.getElementById('map3dBtn');
+  var b3t = document.getElementById('map3dText');
+  if (b3) {
+    b3.addEventListener('click', function() {
+      is3D = !is3D;
+      if (is3D) {
+        m.setPitch(45);
+        b3t.textContent = '2D';
+        if (m.getLayer('building-3d')) m.setLayoutProperty('building-3d', 'visibility', 'visible');
+      } else {
+        m.setPitch(0);
+        b3t.textContent = '3D';
+        if (m.getLayer('building-3d')) m.setLayoutProperty('building-3d', 'visibility', 'none');
+      }
+    });
+  }
+  m.on('load', function() {
+    if (m.getLayer('building-3d')) {
+      m.setLayerZoomRange('building-3d', 13, 24);
+    }
+    var bounds = new maplibregl.LngLatBounds();
+    var hasBounds = false;
+    cards.forEach(function(card) {
+      var lat = parseFloat(card.dataset.lat);
+      var lng = parseFloat(card.dataset.lng);
+      if (!lat || !lng) return;
+      hasBounds = true;
+      bounds.extend([lng, lat]);
+      var el = document.createElement('div');
+      el.style.cssText = 'background:#DC2626;color:#fff;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.2);border:2px solid #fff;cursor:pointer';
+      el.textContent = card.dataset.price;
+      var popup = new maplibregl.Popup({ offset: 25, maxWidth: '240px' }).setHTML(
+        '<a href="' + card.getAttribute('href') + '" style="text-decoration:none;color:inherit">' +
+        (card.dataset.img ? '<img src="' + card.dataset.img + '" style="width:100%;height:120px;object-fit:cover;border-radius:8px 8px 0 0">' : '') +
+        '<div style="padding:10px 0"><strong style="font-size:13px">' + card.dataset.title + '</strong>' +
+        '<div style="font-size:11px;color:#666;margin-top:4px">' + card.dataset.location + '</div>' +
+        '<div style="font-size:15px;font-weight:700;color:#DC2626;margin-top:4px">' + card.dataset.price + '</div></div></a>'
+      );
+      new maplibregl.Marker({ element: el })
+        .setLngLat([lng, lat])
+        .setPopup(popup)
+        .addTo(m);
+    });
+    if (hasBounds) {
+      m.fitBounds(bounds, { padding: 40, maxZoom: 14 });
+    }
+  });
+  if (tb) {
+    tb.addEventListener('click', function() {
+      c.classList.toggle('collapsed');
+      tt.textContent = c.classList.contains('collapsed') ? 'Mostrar mapa' : 'Ocultar mapa';
+      setTimeout(function() { m.resize(); }, 350);
+    });
+  }
+})();
+</script>
+
+{% endblock %}
