@@ -21,6 +21,11 @@ def first_image(prop):
 
 Base.metadata.create_all(bind=engine)
 
+try:
+    engine.execute("ALTER TABLE properties ADD COLUMN cover_image VARCHAR DEFAULT ''")
+except Exception:
+    pass  # column already exists
+
 app = FastAPI(title=SITE_NAME)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
