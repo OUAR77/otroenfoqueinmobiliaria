@@ -73,10 +73,10 @@
     <div id="propertiesMap" style="border-radius:var(--radius-lg);margin-bottom:32px;border:1px solid var(--border-light);z-index:1"></div>
     <div class="properties-grid" id="propertiesGrid">
       {% for p in properties %}
-      <a href="/propiedades/{{ p.slug }}" class="property-card" data-lat="{{ p.latitude or '' }}" data-lng="{{ p.longitude or '' }}" data-title="{{ p.title }}" data-price="{{ "{:,.0f}".format(p.price).replace(",", ".") }} €" data-location="{{ p.location }}" data-img="{{ p.images | first_image }}">
+      <a href="/propiedades/{{ p.slug }}" class="property-card" data-lat="{{ p.latitude or '' }}" data-lng="{{ p.longitude or '' }}" data-title="{{ p.title }}" data-price="{{ "{:,.0f}".format(p.price).replace(",", ".") }} €" data-location="{{ p.location }}" data-img="{{ p | cover_image }}">
         <div class="property-card-image">
           {% if p.images %}
-          <img src="{{ p.images | first_image }}" alt="{{ p.title }}" loading="lazy">
+          <img src="{{ p | cover_image }}" alt="{{ p.title }}" loading="lazy">
           {% else %}
           <div class="no-image"><i class="fas fa-home"></i></div>
           {% endif %}

@@ -60,7 +60,7 @@
       <a href="/propiedades/{{ p.slug }}" class="property-card reveal-scale">
         <div class="property-card-image">
           {% if p.images %}
-          <img src="{{ p.images | first_image }}" alt="{{ p.title }}" loading="lazy">
+          <img src="{{ p | cover_image }}" alt="{{ p.title }}" loading="lazy">
           {% else %}
           <div class="no-image"><i class="fas fa-home"></i></div>
           {% endif %}

@@ -24,6 +24,7 @@ class Property(Base):
     longitude = Column(Float, nullable=True)
     features = Column(Text, default="")
     images = Column(Text, default="")
+    cover_image = Column(String, default="")
     video_url = Column(String, default="")
     tour_url = Column(String, default="")
     status = Column(String, default="disponible")

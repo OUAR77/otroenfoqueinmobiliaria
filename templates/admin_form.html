@@ -142,12 +142,21 @@
       <h4 style="margin-bottom:8px;font-size:.95rem;color:var(--text2)">{{ g.label }} ({{ g.images|length }})</h4>
       <div class="image-grid">
       {% for src in g.images %}
-        <div class="image-item">
-          <img src="{{ src }}" alt="">
-          <form method="POST" action="/admin/propiedades/{{ p.id }}/delete-image" onsubmit="return confirm('¿Eliminar esta imagen?')">
-            <input type="hidden" name="image" value="{{ src }}">
-            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-          </form>
+        <div class="image-item" style="position:relative">
+          <img src="{{ src }}" alt="" style="width:100%;display:block;border-radius:8px">
+          {% if src == p.cover_image %}
+          <span style="position:absolute;top:6px;left:6px;background:var(--primary);color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600">Portada</span>
+          {% endif %}
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <form method="POST" action="/admin/propiedades/{{ p.id }}/set-cover">
+              <input type="hidden" name="image" value="{{ src }}">
+              <button type="submit" class="btn btn-sm btn-primary" style="font-size:11px;padding:3px 8px{% if src == p.cover_image %};opacity:0.5{% endif %}" {% if src == p.cover_image %}disabled{% endif %}><i class="fas fa-image"></i> Portada</button>
+            </form>
+            <form method="POST" action="/admin/propiedades/{{ p.id }}/delete-image" onsubmit="return confirm('¿Eliminar esta imagen?')">
+              <input type="hidden" name="image" value="{{ src }}">
+              <button type="submit" class="btn btn-sm btn-danger" style="font-size:11px;padding:3px 8px"><i class="fas fa-trash"></i></button>
+            </form>
+          </div>
         </div>
       {% endfor %}
       </div>

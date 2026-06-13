@@ -36,7 +36,7 @@
             <td>{{ p.id }}</td>
             <td>
               {% if p.images %}
-              <img src="{{ p.images | first_image }}" class="admin-thumb">
+              <img src="{{ p | cover_image }}" class="admin-thumb">
               {% else %}
               <div class="admin-thumb empty"></div>
               {% endif %}

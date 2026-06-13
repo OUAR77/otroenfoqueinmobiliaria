@@ -34,6 +34,11 @@ def jinja_first_image(raw):
     parsed = parse_images(raw)
     return parsed[0]["src"] if parsed else ""
 
+def jinja_cover_image(prop):
+    if prop.cover_image:
+        return prop.cover_image
+    return jinja_first_image(prop.images)
+
 def jinja_parse_images(raw):
     return parse_images(raw)
 
@@ -53,6 +58,7 @@ def jinja_group_images(raw):
     return result
 
 templates.env.filters["first_image"] = jinja_first_image
+templates.env.filters["cover_image"] = jinja_cover_image
 templates.env.filters["parse_images"] = jinja_parse_images
 templates.env.filters["group_images"] = jinja_group_images
 
@@ -622,6 +628,19 @@ def admin_delete_image(prop_id: int, request: Request, image: str = Form(...), d
     images = parse_images(prop.images)
     images = [img for img in images if img["src"] != image]
     prop.images = images_to_json(images)
+    if prop.cover_image == image:
+        prop.cover_image = ""
+    db.commit()
+    return RedirectResponse(f"/admin/propiedades/{prop_id}/editar", status_code=302)
+
+
+@app.post("/admin/propiedades/{prop_id}/set-cover")
+def admin_set_cover(prop_id: int, request: Request, image: str = Form(...), db: Session = Depends(get_db)):
+    require_admin(request)
+    prop = db.query(Property).filter(Property.id == prop_id).first()
+    if not prop:
+        raise HTTPException(status_code=404)
+    prop.cover_image = image
     db.commit()
     return RedirectResponse(f"/admin/propiedades/{prop_id}/editar", status_code=302)
 
@@ -847,7 +866,7 @@ def api_properties(db: Session = Depends(get_db)):
         "operation": p.operation, "property_type": p.property_type,
         "bedrooms": p.bedrooms, "bathrooms": p.bathrooms,
         "surface": p.surface, "location": p.location,
-        "image": jinja_first_image(p.images),
+        "image": jinja_cover_image(p),
         "featured": p.featured,
     } for p in props]
 
