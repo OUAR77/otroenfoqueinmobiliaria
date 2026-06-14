@@ -285,10 +285,10 @@ def valuation_post(
     address: str = Form(""), surface: float = Form(0),
     notes: str = Form(""),
 ):
-    if not name.strip() or not email.strip():
+    if not name.strip() or not email.strip() or not phone.strip():
         return templates.TemplateResponse(request, "valuation.html", {
             "site_name": SITE_NAME, "whatsapp": WHATSAPP_NUMBER,
-            "error": "Rellena nombre y email obligatorios",
+            "error": "Rellena nombre, teléfono y email obligatorios",
         }, status_code=400)
     vr = ValuationRequest(name=name, email=email, phone=phone,
         property_type=property_type, address=address,

@@ -32,21 +32,21 @@
     </div>
     {% endif %}
     <form method="POST" action="/valoracion" class="contact-form" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px">
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
         <div class="form-group">
           <label>Nombre completo *</label>
           <input type="text" name="name" required placeholder="Tu nombre">
         </div>
         <div class="form-group">
-          <label>Teléfono</label>
-          <input type="tel" name="phone" placeholder="614 28 51 35">
+          <label>Teléfono *</label>
+          <input type="tel" name="phone" required placeholder="614 28 51 35">
         </div>
-      </div>
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div class="form-group">
           <label>Email *</label>
           <input type="email" name="email" required placeholder="tu@email.com">
         </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div class="form-group">
           <label>Tipo de propiedad</label>
           <select name="property_type">

@@ -12,38 +12,8 @@
   </div>
 </section>
 
-<section class="section" style="padding-top:0">
+<section class="section section-alt" style="padding-top:0">
   <div class="container">
-    <div class="contact-grid">
-      <div class="contact-card reveal-scale">
-        <div class="contact-card-icon"><i class="fab fa-whatsapp"></i></div>
-        <h3>WhatsApp</h3>
-        <p>Respuesta rápida a tus consultas por WhatsApp</p>
-        <a href="https://wa.me/34{{ whatsapp }}" target="_blank" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Escribir ahora</a>
-      </div>
-      <div class="contact-card reveal-scale">
-        <div class="contact-card-icon"><i class="fas fa-phone"></i></div>
-        <h3>Teléfono</h3>
-        <p>Llámanos directamente y habla con nuestro equipo</p>
-        <a href="tel:+34{{ whatsapp }}" class="btn btn-outline btn-outline-dark"><i class="fas fa-phone"></i> +34 {{ whatsapp[:3] }} {{ whatsapp[3:6] }} {{ whatsapp[6:] }}</a>
-      </div>
-      <div class="contact-card reveal-scale">
-        <div class="contact-card-icon"><i class="fas fa-map-marker-alt"></i></div>
-        <h3>Visítanos</h3>
-        <p>C. Río Júcar, 17, 1°- oficina 3, 04230 Huércal de Almería, Almería</p>
-        <a href="https://wa.me/34{{ whatsapp }}" target="_blank" class="btn btn-outline btn-outline-dark"><i class="fab fa-whatsapp"></i> Pedir cita</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-header centered reveal">
-      <div class="section-label">Formulario</div>
-      <h2>Envíanos un mensaje</h2>
-      <p>Te responderemos en menos de 24 horas</p>
-    </div>
     <div style="max-width:640px;margin:0 auto">
       {% if success %}
       <div style="background:var(--red-light);color:var(--red-dark);padding:20px 24px;border-radius:var(--radius-md);margin-bottom:32px;text-align:center;font-weight:600">
@@ -82,6 +52,32 @@
           <i class="fas fa-paper-plane"></i> Enviar mensaje
         </button>
       </form>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-header centered reveal" style="margin-bottom:24px">
+      <div class="section-label">Otros canales</div>
+      <h3 style="font-size:1.3rem">También puedes contactarnos por</h3>
+    </div>
+    <div class="contact-grid" style="max-width:800px;margin:0 auto">
+      <div class="contact-card reveal-scale" style="padding:20px">
+        <div class="contact-card-icon" style="font-size:24px"><i class="fab fa-whatsapp"></i></div>
+        <h3 style="font-size:1rem">WhatsApp</h3>
+        <a href="https://wa.me/34{{ whatsapp }}" target="_blank" class="btn btn-primary" style="font-size:13px;padding:8px 16px"><i class="fab fa-whatsapp"></i> Escribir ahora</a>
+      </div>
+      <div class="contact-card reveal-scale" style="padding:20px">
+        <div class="contact-card-icon" style="font-size:24px"><i class="fas fa-phone"></i></div>
+        <h3 style="font-size:1rem">Teléfono</h3>
+        <a href="tel:+34{{ whatsapp }}" class="btn btn-outline btn-outline-dark" style="font-size:13px;padding:8px 16px"><i class="fas fa-phone"></i> +34 {{ whatsapp[:3] }} {{ whatsapp[3:6] }} {{ whatsapp[6:] }}</a>
+      </div>
+      <div class="contact-card reveal-scale" style="padding:20px">
+        <div class="contact-card-icon" style="font-size:24px"><i class="fas fa-map-marker-alt"></i></div>
+        <h3 style="font-size:1rem">Visítanos</h3>
+        <p style="font-size:13px">C. Río Júcar, 17, 1°- oficina 3, 04230 Huércal de Almería</p>
+      </div>
     </div>
   </div>
 </section>
